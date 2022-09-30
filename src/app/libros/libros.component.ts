@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TriStateCheckbox } from 'primeng/tristatecheckbox';
 import { Libros } from '../interfaces/libros.interface';
 import { LibrosService } from '../servicios/libros.service';
 
@@ -9,8 +10,12 @@ import { LibrosService } from '../servicios/libros.service';
 })
 export class LibrosComponent implements OnInit {
 
-  listaLibros: Libros[] = [];
-  Cargando: boolean = false;
+//Aqui se guarda la lista de libros 
+  listaLibros: Libros[] = []; 
+  //Esta variable nuestra la animacion de carga
+  Cargando: boolean = false; 
+  //Indicasi el dialogo esta visible u oculto
+  dialogoVisible: boolean = false; 
 
   constructor(
     private servicioLibros: LibrosService
@@ -35,4 +40,7 @@ export class LibrosComponent implements OnInit {
     });
   }
 
+  mostrarDialogo(){
+    this.dialogoVisible = true;
+  }
 }

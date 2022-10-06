@@ -15,10 +15,14 @@ export class LibrosService {
   ) { }
 
   get(): Observable<Libros[]> {
-      return this.http.get<Libros[]>(this.url);
+    return this.http.get<Libros[]>(this.url);
   }
 
-  post(libros: Libros):Observable<any>{
-    return this.http.post(this.url, libros , { responseType: 'text'});
+  post(libros: Libros): Observable<any> {
+    return this.http.post(this.url, libros, { responseType: 'text' });
+  }
+
+  put(libros: Libros): Observable<any> {
+    return this.http.put(this.url, libros, { responseType: 'text' });
   }
 }

@@ -22,7 +22,9 @@ export class FormularioLibroComponent implements OnInit {
   paginasValido: boolean = true;
 
   guardando: boolean = false;
-  mensajes: Message [] =  [];
+  mensajes: Message[] = [];
+
+  modo: 'Registar' | 'Editar' = 'Registar';
 
   @Output()
   recargarLibros: EventEmitter<boolean> = new EventEmitter();
@@ -35,7 +37,7 @@ export class FormularioLibroComponent implements OnInit {
   }
 
   guardar() {
-    if(this.validar()){
+    if (this.validar()) {
       //Construimos el objeto libros para enviar al servidor
       const libro: Libros = {
         id: this.codigo,
@@ -43,45 +45,68 @@ export class FormularioLibroComponent implements OnInit {
         autor: this.autor,
         paginas: this.paginas
       }
-      //Enviamos el objeto al servidor mediante el metodo POST del servidor
-      this.guardando = true;
-      this.servicioLibros.post(libro).subscribe({
-        next: () =>{
-          this.guardando = false;
-          this.mensajes=[{severity: 'success', summary: 'Exito', detail: 'Se registro el ilbro' }];
-          this.recargarLibros.emit(true);
-        },
-        error: (e) =>{
-          this.guardando = false;
-          console.log (e);
-          this.mensajes=[{severity: 'error', summary: 'Error al guardar', detail: e.error }];
-        }
-      });
+      if (this.modo === 'Registar') {
+        this.registrar(libro);
+      } else {
+        this.editar(libro);
+      }
     }
-
-
   }
 
-  validar(){
+  private registrar(libro: Libros) {
+    this.guardando = true;
+    this.servicioLibros.post(libro).subscribe({
+      next: () => {
+        this.guardando = false;
+        this.mensajes = [{ severity: 'success', summary: 'Exito', detail: 'Se registro el libro' }];
+        this.recargarLibros.emit(true);
+      },
+      error: (e) => {
+        this.guardando = false;
+        console.log(e);
+        this.mensajes = [{ severity: 'error', summary: 'Error al guardar', detail: e.error }];
+      }
+    });
+  }
+
+  private editar(libro: Libros) {
+    this.guardando = true;
+    this.servicioLibros.put(libro).subscribe({
+      next: () => {
+        this.guardando = false;
+        this.mensajes = [{ severity: 'success', summary: 'Exito', detail: 'Se edito el libro' }];
+        this.recargarLibros.emit(true);
+      },
+      error: (e) => {
+        this.guardando = false;
+        console.log(e);
+        this.mensajes = [{ severity: 'error', summary: 'Error al editar', detail: e.error }];
+      }
+    });
+  }
+
+
+
+  validar() {
     this.codigoValido = this.codigo !== null
     this.tituloValido = this.titulo !== null && this.titulo?.length > 0;
-    this.autorValido = this.autor  !== null && this.autor?.length > 0;
+    this.autorValido = this.autor !== null && this.autor?.length > 0;
     this.paginasValido = this.paginas !== null;
     return this.codigoValido && this.tituloValido && this.autorValido && this.paginasValido
   }
 
-  limpiarFormulario(){
-   this.codigo = null;
-   this.titulo = null;
-   this.autor = null;
-   this.paginas = null;
+  limpiarFormulario() {
+    this.codigo = null;
+    this.titulo = null;
+    this.autor = null;
+    this.paginas = null;
 
-   this.codigoValido = true;
-   this.tituloValido = true;
-   this.autorValido = true;
-   this.paginasValido = true;
+    this.codigoValido = true;
+    this.tituloValido = true;
+    this.autorValido = true;
+    this.paginasValido = true;
 
-   this.mensajes = [];
+    this.mensajes = [];
   }
 
 }

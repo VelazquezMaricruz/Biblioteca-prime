@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Message } from 'primeng/api';
 import { TriStateCheckbox } from 'primeng/tristatecheckbox';
 import { Libros } from '../interfaces/libros.interface';
 import { LibrosService } from '../servicios/libros.service';
@@ -16,6 +17,8 @@ export class LibrosComponent implements OnInit {
   Cargando: boolean = false; 
   //Indicasi el dialogo esta visible u oculto
   dialogoVisible: boolean = false; 
+
+  mensajes: Message[] = [];
 
   constructor(
     private servicioLibros: LibrosService
@@ -36,6 +39,7 @@ export class LibrosComponent implements OnInit {
       error: (e) => {
         console.log(e);
         this.Cargando = false;
+        this.mensajes = [{severity: 'error', summary:'Error al cargar libros', detail: e.message}]
       }
     });
   }
